@@ -21,6 +21,8 @@ from core import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/test/', views.TestView.as_view()),
+    path('api/auth/', include('djoser.urls')),
+    path('api/auth/', include('djoser.urls.authtoken')),
 ]
 
 if settings.DEBUG:

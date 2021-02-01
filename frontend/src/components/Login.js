@@ -10,13 +10,12 @@ function Login ({ setAuth }) {
     event.preventDefault()
     login(username, password)
       .then(data => {
-        if (data) {
-          if (data.auth_token) {
-            setAuth(username, data.auth_token)
-          } else {
-            setErrors(data)
-          }
+        if (data && data.auth_token) {
+          setAuth(username, data.auth_token)
         }
+      })
+      .catch(error => {
+        setErrors(error.message)
       })
   }
 
@@ -25,7 +24,7 @@ function Login ({ setAuth }) {
       <h2>Login</h2>
       <form onSubmit={handleSubmit}>
         {errors && (
-          <div class='bg-red white pa3'>{errors.non_field_errors.join(' ')}</div>
+          <div class='bg-red white pa3'>{errors}</div>
         )}
 
         <div className='mv2'>

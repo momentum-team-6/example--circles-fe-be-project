@@ -1,6 +1,16 @@
 import 'tachyons'
+import Login from './components/Login'
+import { useState } from 'react'
 
 function App () {
+  const [username, setUsername] = useState()
+  const [token, setToken] = useState()
+
+  function setAuth (username, token) {
+    setUsername(username)
+    setToken(token)
+  }
+
   return (
     <div className='App sans-serif mw8 center mv3 ph2'>
 
@@ -15,17 +25,14 @@ function App () {
       </header>
 
       <div class='pv2'>
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className='App-link'
-          href='https://reactjs.org'
-          target='_blank'
-          rel='noopener noreferrer'
-        >
-          Learn React
-        </a>
+        {
+          token
+            ? (
+              <div>Logged in as {username}</div>
+              )
+            : <Login setAuth={setAuth} />
+        }
+
       </div>
 
     </div>

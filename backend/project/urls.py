@@ -17,12 +17,18 @@ from django.contrib import admin
 from django.conf import settings
 from django.urls import include, path
 from core import views
+from rest_framework.routers import DefaultRouter
+
+router = DefaultRouter()
+router.register('circles', views.CircleViewSet, basename='circle')
+router.register('posts', views.PostViewSet, basename='post')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/test/', views.TestView.as_view()),
     path('api/auth/', include('djoser.urls')),
     path('api/auth/', include('djoser.urls.authtoken')),
+    path('api/', include(router.urls)),
 ]
 
 if settings.DEBUG:

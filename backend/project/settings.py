@@ -159,7 +159,11 @@ REST_FRAMEWORK = {
     ]
 }
 
-CORS_ORIGIN_ALLOW_ALL = True
+## CORS settings
+
+CORS_ALLOW_ALL_ORIGINS = True
+
+## Heroku settings
 
 import django_on_heroku
 django_on_heroku.settings(locals())

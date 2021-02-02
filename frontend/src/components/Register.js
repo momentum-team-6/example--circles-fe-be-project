@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { Link, Redirect } from 'react-router-dom'
-import { login } from '../api'
+import { register } from '../api'
 
-function Login ({ isLoggedIn, setAuth }) {
+function Register ({ isLoggedIn, setAuth }) {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [errors, setErrors] = useState()
@@ -13,7 +13,7 @@ function Login ({ isLoggedIn, setAuth }) {
 
   function handleSubmit (event) {
     event.preventDefault()
-    login(username, password)
+    register(username, password)
       .then(data => {
         if (data && data.auth_token) {
           setAuth(username, data.auth_token)
@@ -25,8 +25,8 @@ function Login ({ isLoggedIn, setAuth }) {
   }
 
   return (
-    <div className='Login'>
-      <h2>Login or <Link to='/register'>Register</Link></h2>
+    <div className='Register'>
+      <h2>Register or <Link to='/login'>Login</Link></h2>
       <form onSubmit={handleSubmit}>
         {errors && (
           <div class='bg-red white pa3'>{errors}</div>
@@ -54,10 +54,10 @@ function Login ({ isLoggedIn, setAuth }) {
           />
         </div>
 
-        <button type='submit'>Log in</button>
+        <button type='submit'>Register</button>
       </form>
     </div>
   )
 }
 
-export default Login
+export default Register

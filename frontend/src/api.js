@@ -57,3 +57,13 @@ export function register (username, password) {
       throw err
     })
 }
+
+export function getCircles (token) {
+  return API
+    .get('circles/', {
+      headers: {
+        Authorization: `Token ${token}`
+      }
+    })
+    .then(res => res.data)
+}

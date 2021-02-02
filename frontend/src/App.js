@@ -3,6 +3,7 @@ import Login from './components/Login'
 import { useState } from 'react'
 import { BrowserRouter as Router, Link, Switch, Route, Redirect } from 'react-router-dom'
 import Register from './components/Register'
+import CircleList from './components/CircleList'
 
 function App () {
   const [username, setUsername] = useState()
@@ -28,7 +29,7 @@ function App () {
                 {
                   isLoggedIn
                     ? (
-                      <span>Hello, {username}! <Link to='/logout'>Log out</Link></span>
+                      <span>Hello, {username}! <button onClick={() => setToken(null)}>Log out</button></span>
                       )
                     : (
                       <span>
@@ -41,24 +42,18 @@ function App () {
           </div>
         </header>
 
-        <Switch>
-          <Route path='/login'>
-            <Login isLoggedIn={isLoggedIn} setAuth={setAuth} />
-          </Route>
-          <Route path='/register'>
-            <Register isLoggedIn={isLoggedIn} setAuth={setAuth} />
-          </Route>
-          <Route path='/'>
-            {!isLoggedIn && <Redirect to='/login' />}
-            <div>I am the home page</div>
-          </Route>
-        </Switch>
-
-        <div class='pv2'>
-          {token &&
-            (
-              <div>Logged in as {username}</div>
-            )}
+        <div className='pv2'>
+          <Switch>
+            <Route path='/login'>
+              <Login isLoggedIn={isLoggedIn} setAuth={setAuth} />
+            </Route>
+            <Route path='/register'>
+              <Register isLoggedIn={isLoggedIn} setAuth={setAuth} />
+            </Route>
+            <Route path='/'>
+              <CircleList token={token} />
+            </Route>
+          </Switch>
         </div>
       </div>
     </Router>

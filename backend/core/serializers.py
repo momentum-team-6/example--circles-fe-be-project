@@ -11,17 +11,16 @@ class UserSerializer(serializers.ModelSerializer):
         ]
 
 
-class EmbeddedCircleMembershipSerializer(serializers.HyperlinkedModelSerializer
-                                         ):
+class CircleMembershipSerializer(serializers.HyperlinkedModelSerializer):
     user = UserSerializer(read_only=True)
 
     class Meta:
         model = CircleMembership
-        fields = ['user', 'is_admin', 'created_at']
+        fields = ['pk', 'user', 'is_admin', 'created_at']
 
 
 class CircleSerializer(serializers.HyperlinkedModelSerializer):
-    memberships = EmbeddedCircleMembershipSerializer(many=True, read_only=True)
+    memberships = CircleMembershipSerializer(many=True, read_only=True)
 
     class Meta:
         model = Circle

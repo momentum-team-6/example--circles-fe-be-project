@@ -19,6 +19,14 @@ class CircleMembershipSerializer(serializers.HyperlinkedModelSerializer):
         fields = ['pk', 'user', 'is_admin', 'created_at']
 
 
+class PostSerializer(serializers.HyperlinkedModelSerializer):
+    author = UserSerializer(read_only=True)
+
+    class Meta:
+        model = Post
+        fields = ['url', 'author', 'circle', 'message', 'created_at']
+
+
 class CircleSerializer(serializers.HyperlinkedModelSerializer):
     memberships = CircleMembershipSerializer(many=True, read_only=True)
 
@@ -31,9 +39,15 @@ class CircleSerializer(serializers.HyperlinkedModelSerializer):
         ]
 
 
-class PostSerializer(serializers.HyperlinkedModelSerializer):
-    author = UserSerializer(read_only=True)
+class DetailedCircleSerializer(serializers.HyperlinkedModelSerializer):
+    memberships = CircleMembershipSerializer(many=True, read_only=True)
+    posts = PostSerializer(many=True, read_only=True)
 
     class Meta:
-        model = Post
-        fields = ['url', 'author', 'circle', 'message', 'created_at']
+        model = Circle
+        fields = [
+            'url',
+            'name',
+            'memberships',
+            'posts',
+        ]

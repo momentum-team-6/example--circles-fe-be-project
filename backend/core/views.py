@@ -1,27 +1,38 @@
 from django.core.exceptions import PermissionDenied
-from rest_framework.viewsets import ModelViewSet
-from rest_framework.decorators import action
-from rest_framework.response import Response
 from rest_framework import permissions
+from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.response import Response
+from rest_framework.viewsets import ModelViewSet
 
-from core.models import Circle, Post
+from core.models import Post
 
-from .serializers import CircleSerializer, PostSerializer
+from .serializers import CircleSerializer, DetailedCircleSerializer, PostSerializer
 
 
 class CircleViewSet(ModelViewSet):
-    queryset = Circle.objects.all()
-    serializer_class = CircleSerializer
+    class IsAdminOrReadOnly(permissions.BasePermission):
+        def has_object_permission(self, request, view, obj):
+            if request.method in permissions.SAFE_METHODS:
+                return True
+            return obj.members.filter(user=request.user,
+                                      is_admin=True).count() > 0
+
+    permission_classes = [permissions.IsAuthenticated, IsAdminOrReadOnly]
+
+    def get_queryset(self):
+        return self.request.circles.all()
+
+    def get_serializer_class(self):
+        if self.action == 'retrieve':
+            return DetailedCircleSerializer
+        return CircleSerializer
 
     # on create, we need to make a circle membership
     # for the user creating the circle and make them an admin
     def perform_create(self, serializer):
         circle = serializer.save()
         circle.memberships.create(user=self.request.user, is_admin=True)
-
-    # TODO add permissioning to make sure only admins can update or delete
-    # a circle
 
 
 class MembershipsViewSet(ModelViewSet):
@@ -30,15 +41,14 @@ class MembershipsViewSet(ModelViewSet):
     # TODO allow admins of circles to add, update, and delete members from circles
 
 
-class IsAuthorOrReadOnly(permissions.BasePermission):
-    def has_object_permission(self, request, view, obj):
-        if request.method in permissions.SAFE_METHODS:
-            return True
-
-        return obj.author == request.user
-
-
 class PostViewSet(ModelViewSet):
+    class IsAuthorOrReadOnly(permissions.BasePermission):
+        def has_object_permission(self, request, view, obj):
+            if request.method in permissions.SAFE_METHODS:
+                return True
+
+            return obj.author == request.user
+
     serializer_class = PostSerializer
     permission_classes = [permissions.IsAuthenticated, IsAuthorOrReadOnly]
     pagination_class = PageNumberPagination

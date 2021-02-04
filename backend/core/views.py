@@ -1,14 +1,10 @@
-from core.models import Circle, Post
-from rest_framework.views import APIView
+from django.core.exceptions import PermissionDenied
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.response import Response
-from .serializers import CircleSerializer, PostSerializer, UserSerializer
+from rest_framework import permissions
 
+from core.models import Circle, Post
 
-class TestView(APIView):
-    def get(self, request):
-        serializer = UserSerializer(request.user)
-        return Response(data=serializer.data)
+from .serializers import CircleSerializer, PostSerializer
 
 
 class CircleViewSet(ModelViewSet):
@@ -25,11 +21,25 @@ class CircleViewSet(ModelViewSet):
     # a circle
 
 
+class IsAuthorOrReadOnly(permissions.BasePermission):
+    def has_object_permission(self, request, view, obj):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+
+        return obj.author == request.user
+
+
 class PostViewSet(ModelViewSet):
     # TODO narrow down what posts are seen
     queryset = Post.objects.all()
     serializer_class = PostSerializer
+    permission_classes = [permissions.IsAuthenticated, IsAuthorOrReadOnly]
 
     def perform_create(self, serializer):
-        # TODO ensure user has access to circle they are creating post in
-        serializer.save(author=self.request.user)
+        data = serializer.validated_data
+        circle = data['circle']
+
+        if circle.is_member(self.request.user):
+            serializer.save(author=self.request.user)
+        else:
+            raise PermissionDenied("You are not a member of that circle.")

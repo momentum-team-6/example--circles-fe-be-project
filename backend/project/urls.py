@@ -25,7 +25,6 @@ router.register('posts', views.PostViewSet, basename='post')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/test/', views.TestView.as_view()),
     path('api/auth/', include('djoser.urls')),
     path('api/auth/', include('djoser.urls.authtoken')),
     path('api/', include(router.urls)),

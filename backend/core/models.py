@@ -12,6 +12,9 @@ class Circle(models.Model):
                                      through='CircleMembership',
                                      related_name="circles")
 
+    def is_member(self, user):
+        return user in self.members.all()
+
 
 class CircleMembership(models.Model):
     circle = models.ForeignKey(to=Circle,

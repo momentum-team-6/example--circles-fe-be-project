@@ -33,6 +33,7 @@ class CircleSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Circle
         fields = [
+            'pk',
             'url',
             'name',
             'memberships',
@@ -46,6 +47,7 @@ class DetailedCircleSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Circle
         fields = [
+            'pk',
             'url',
             'name',
             'memberships',

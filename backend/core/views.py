@@ -15,16 +15,16 @@ class CircleViewSet(ModelViewSet):
         def has_object_permission(self, request, view, obj):
             if request.method in permissions.SAFE_METHODS:
                 return True
-            return obj.members.filter(user=request.user,
-                                      is_admin=True).count() > 0
+            return obj.memberships.filter(user=request.user,
+                                          is_admin=True).count() > 0
 
     permission_classes = [permissions.IsAuthenticated, IsAdminOrReadOnly]
 
     def get_queryset(self):
-        return self.request.circles.all()
+        return self.request.user.circles.all()
 
     def get_serializer_class(self):
-        if self.action == 'retrieve':
+        if self.detail:
             return DetailedCircleSerializer
         return CircleSerializer
 

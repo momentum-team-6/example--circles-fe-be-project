@@ -67,3 +67,33 @@ export function getCircles (token) {
     })
     .then(res => res.data)
 }
+
+export function getCircle (token, pk) {
+  return API
+    .get(`circles/${pk}/`, {
+      headers: {
+        Authorization: `Token ${token}`
+      }
+    })
+    .then(res => res.data)
+}
+
+export function createCircle (token, name) {
+  return API.post('circles/', {
+    name: name
+  }, {
+    headers: {
+      Authorization: `Token ${token}`
+    }
+  })
+    .then(res => res.data)
+}
+
+export function updateCircle (token, pk, fields) {
+  return API.patch(`circles/${pk}/`, fields, {
+    headers: {
+      Authorization: `Token ${token}`
+    }
+  })
+    .then(res => res.data)
+}

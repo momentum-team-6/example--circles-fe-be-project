@@ -1,13 +1,18 @@
 import 'tachyons'
 import Login from './components/Login'
-import { useState } from 'react'
-import { BrowserRouter as Router, Link, Switch, Route, Redirect } from 'react-router-dom'
+import { BrowserRouter as Router, Link, Switch, Route } from 'react-router-dom'
 import Register from './components/Register'
 import CircleList from './components/CircleList'
+import createPersistedState from 'use-persisted-state'
+import CreateCircle from './components/CreateCircle'
+import Circle from './components/Circle'
+
+const useUsername = createPersistedState('circles_username')
+const useToken = createPersistedState('circles_token')
 
 function App () {
-  const [username, setUsername] = useState()
-  const [token, setToken] = useState()
+  const [username, setUsername] = useUsername()
+  const [token, setToken] = useToken()
 
   function setAuth (username, token) {
     setUsername(username)
@@ -49,6 +54,9 @@ function App () {
             </Route>
             <Route path='/register'>
               <Register isLoggedIn={isLoggedIn} setAuth={setAuth} />
+            </Route>
+            <Route path='/c/:pk'>
+              <Circle token={token} />
             </Route>
             <Route path='/'>
               <CircleList token={token} />
